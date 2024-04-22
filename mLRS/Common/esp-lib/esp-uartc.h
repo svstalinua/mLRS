@@ -16,12 +16,21 @@
 #endif
 
 
-uint16_t uartc_putc(char c)
+IRAM_ATTR static inline uint16_t uartc_putc(char c)
 {
     UARTC_SERIAL_NO.write(c);
     return 1;
 }
 
+IRAM_ATTR static inline char uartc_getc(void)
+{
+    return (char)UARTC_SERIAL_NO.read();
+}
+
+IRAM_ATTR static inline uint16_t uartc_rx_available(void)
+{
+    return (UARTC_SERIAL_NO.available() > 0) ? 1 : 0;
+}
 
 //-------------------------------------------------------
 // INIT routines

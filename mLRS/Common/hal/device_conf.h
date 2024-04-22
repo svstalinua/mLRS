@@ -407,6 +407,13 @@ The default selection of frequency bands can be overruled by feature defines.
   #define FREQUENCY_BAND_2P4_GHZ
 #endif
 
+#ifdef TX_ELRS_BETAFPV_MICRO_1W_2400_ESP32
+  #define DEVICE_NAME "BETAFPV MICRO 1W"
+  #define DEVICE_IS_TRANSMITTER
+  #define DEVICE_HAS_SX128x
+  #define FREQUENCY_BAND_2P4_GHZ
+#endif
+
 // -- DIY
 
 #ifdef RX_DIYBOARD_900_ESP8266

@@ -263,6 +263,10 @@ Note: Some "high-level" features are set for each device in the device_conf.h fi
 #include "esp/rx-hal-generic-2400-td-pa-esp32.h"
 #endif
 
+#ifdef TX_ELRS_BETAFPV_MICRO_1W_2400_ESP32
+#include "esp/tx-hal-betafpv-micro-1w-2400-esp32.h"
+#endif
+
 // -- DIY
 
 #ifdef RX_DIYBOARD_900_ESP8266
