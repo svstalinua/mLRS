@@ -431,6 +431,13 @@ The default selection of frequency bands can be overruled by feature defines.
   #define FREQUENCY_BAND_915_MHZ_FCC
 #endif
 
+#ifdef TX_DEV_2400_ESP32
+  #define DEVICE_NAME "DEV 2400 ESP32"
+  #define DEVICE_IS_TRANSMITTER
+  #define DEVICE_HAS_SX128x
+  #define FREQUENCY_BAND_2P4_GHZ
+#endif
+
 
 //-------------------------------------------------------
 // MLRS Feature Defines

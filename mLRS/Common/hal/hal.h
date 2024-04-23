@@ -277,6 +277,10 @@ Note: Some "high-level" features are set for each device in the device_conf.h fi
 #include "esp/rx-hal-dev-900-esp32.h"
 #endif
 
+#ifdef TX_DEV_2400_ESP32
+#include "esp/tx-hal-dev-2400-esp32.h"
+#endif
+
 
 //-------------------------------------------------------
 // Derived Defines

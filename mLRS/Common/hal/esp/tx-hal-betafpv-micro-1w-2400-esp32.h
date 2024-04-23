@@ -53,8 +53,8 @@
 //#define DEVICE_HAS_IN
 
 //#define DEVICE_HAS_SERIAL_OR_COM    // board has UART which is shared between Serial or Com, selected by e.g. a switch
-#define DEVICE_HAS_NO_SERIAL  
-//#define DEVICE_HAS_NO_COM
+//#define DEVICE_HAS_NO_SERIAL  
+#define DEVICE_HAS_NO_COM
 
 //#define DEVICE_HAS_I2C_DISPLAY_ROT180
 #define DEVICE_HAS_FAN_ONOFF
