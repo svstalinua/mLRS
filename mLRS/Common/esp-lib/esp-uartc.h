@@ -38,8 +38,9 @@ IRAM_ATTR static inline uint16_t uartc_rx_available(void)
 
 void uartc_init(void)
 {
-    UARTC_SERIAL_NO.begin(UARTC_BAUD, SERIAL_8N1, 22, 23);  // to do - fix this
+    UARTC_SERIAL_NO.begin(UARTC_BAUD);  // to do - fix this
 #ifdef ESP32
+    UARTC_SERIAL_NO.begin(UARTC_BAUD, SERIAL_8N1, UARTC_RX, UARTC_TX);  // to do - fix this
     UARTB_SERIAL_NO.setRxFIFOFull(8);  // > 57600 baud sets to 120 which is too much, buffer only 127 bytes
     UARTB_SERIAL_NO.setRxTimeout(1);   // wait for 1 symbol (~11 bits) to trigger Rx ISR, default 2
 #endif

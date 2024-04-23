@@ -21,11 +21,15 @@
 // UARTF = debug port
 
 #define UARTB_USE_SERIAL
+#define UARTB_TX                  IO_P23  
+#define UARTB_RX                  IO_P22
 #define UARTB_BAUD                TX_SERIAL_BAUDRATE
 #define UARTB_TXBUFSIZE           TX_SERIAL_TXBUFSIZE
 #define UARTB_RXBUFSIZE           TX_SERIAL_RXBUFSIZE
 
 #define UARTC_USE_SERIAL1
+#define UARTC_TX                  IO_P1 
+#define UARTC_RX                  IO_P3
 #define UARTC_BAUD                TX_SERIAL_BAUDRATE
 #define UARTC_TXBUFSIZE           TX_SERIAL_TXBUFSIZE
 #define UARTC_RXBUFSIZE           TX_SERIAL_RXBUFSIZE
