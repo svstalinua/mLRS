@@ -45,13 +45,15 @@ volatile uint32_t MS_C = 0;
 IRQHANDLER(
 void CLOCK_IRQHandler(void)
 {
-    CNT_10us++;
+/*    CNT_10us++;
 
     // call HAL_IncTick every 1 ms
     if (CNT_10us == MS_C) {
         MS_C = CNT_10us + CLOCK_CNT_1MS; 
         HAL_IncTick();
     }
+*/
+    HAL_IncTick();
 })
 
 bool initialized = false;
@@ -66,9 +68,9 @@ void systick_millis_init(void)
     // Initialize the timer
 #if defined(ESP32)
     hw_timer_t* timer0_cfg = nullptr;
-    timer0_cfg = timerBegin(0, 800, 1);  // Timer 0, APB clock is 80 Mhz | divide by 800 is 100 KHz / 10 us, count up    
+    timer0_cfg = timerBegin(0, 40000, 1);  // Timer 0, APB clock is 80 Mhz | divide by 800 is 100 KHz / 10 us, count up    
     timerAttachInterrupt(timer0_cfg, &CLOCK_IRQHandler, true);
-    timerAlarmWrite(timer0_cfg, 1, true);
+    timerAlarmWrite(timer0_cfg, 2, true);
     timerAlarmEnable(timer0_cfg);
 #elif defined(ESP8266)
     timer1_attachInterrupt(CLOCK_IRQHandler); 
