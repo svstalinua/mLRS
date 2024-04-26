@@ -188,8 +188,7 @@ void WhileTransmit::handle_once(void)
     uint32_t tnow_ms = millis32();
 
     static uint32_t main_tlast_ms = 0;
-    //if (tnow_ms - main_tlast_ms >= 250) { // Update Main page at 4 Hz
-    if (tnow_ms - main_tlast_ms >= 900) { // ESP, fix this
+    if (tnow_ms - main_tlast_ms >= 250) { // Fine for 19, 31 Hz
         main_tlast_ms = tnow_ms;
         disp.UpdateMain();
     }
