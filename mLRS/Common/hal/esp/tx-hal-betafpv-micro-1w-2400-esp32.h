@@ -48,16 +48,15 @@
 */
 
 
-#define DEVICE_HAS_SINGLE_LED
-//#define DEVICE_HAS_JRPIN5
-//#define DEVICE_HAS_IN
+#define DEVICE_HAS_SINGLE_LED_RGB
+#define DEVICE_HAS_JRPIN5_ESP32
 
 //#define DEVICE_HAS_SERIAL_OR_COM    // board has UART which is shared between Serial or Com, selected by e.g. a switch
 //#define DEVICE_HAS_NO_SERIAL  
 #define DEVICE_HAS_NO_COM
 
-//#define DEVICE_HAS_I2C_DISPLAY_ROT180
-//#define DEVICE_HAS_FAN_ONOFF
+#define DEVICE_HAS_I2C_DISPLAY_ROT180
+#define DEVICE_HAS_FAN_ONOFF
 //#define USE_FEATURE_MAVLINK_PARAMS // has no CLI, no Lua, hence needs this
 
 
@@ -109,18 +108,18 @@ void sx_init_gpio(void)
     gpio_init(SX_RESET, IO_MODE_OUTPUT_PP_HIGH);
 }
 
-IRAM_ATTR static inline bool sx_busy_read(void)
+IRAM_ATTR bool sx_busy_read(void)
 {
     return (gpio_read_activehigh(SX_BUSY)) ? true : false;
 }
 
-IRAM_ATTR static inline void sx_amp_transmit(void)
+IRAM_ATTR void sx_amp_transmit(void)
 {
     gpio_low(SX_RX_EN);
     gpio_high(SX_TX_EN);
 }
 
-IRAM_ATTR static inline void sx_amp_receive(void)
+IRAM_ATTR void sx_amp_receive(void)
 {
     gpio_low(SX_TX_EN);
     gpio_high(SX_RX_EN);
@@ -153,16 +152,18 @@ IRAM_ATTR bool button_pressed(void)
 #include <NeoPixelBus.h>
 #define LED_RED                    16
 bool ledRedState;
+bool ledGreenState;
+bool ledBlueState;
 
 NeoPixelBus<NeoGrbFeature, NeoEsp32I2s0Ws2812xMethod> ledRGB(1, LED_RED);
 
-IRAM_ATTR void leds_init(void)
+void leds_init(void)
 {
     ledRGB.Begin();
     ledRGB.Show();
 }
 
-IRAM_ATTR void led_red_off(void) 
+IRAM_ATTR void led_red_off(void)
 {
     if (!ledRedState) return;
     ledRGB.SetPixelColor(0, RgbColor(0, 0, 0));
@@ -170,7 +171,7 @@ IRAM_ATTR void led_red_off(void)
     ledRedState = 0;
 }
 
-IRAM_ATTR void led_red_on(void) 
+IRAM_ATTR void led_red_on(void)
 {
     if (ledRedState) return;
     ledRGB.SetPixelColor(0, RgbColor(255, 0, 0));
@@ -183,11 +184,53 @@ IRAM_ATTR void led_red_toggle(void)
     if (ledRedState) { led_red_off(); } else { led_red_on(); }
 }
 
+IRAM_ATTR void led_green_off(void)
+{
+    if (!ledGreenState) return;
+    ledRGB.SetPixelColor(0, RgbColor(0, 0, 0));
+    ledRGB.Show();
+    ledGreenState = 0;
+}
+
+IRAM_ATTR void led_green_on(void)
+{
+    if (ledGreenState) return;
+    ledRGB.SetPixelColor(0, RgbColor(0, 255, 0));
+    ledRGB.Show();
+    ledGreenState = 1;
+}
+
+IRAM_ATTR void led_green_toggle(void)
+{
+    if (ledGreenState) { led_green_off(); } else { led_green_on(); }
+}
+
+IRAM_ATTR void led_blue_off(void)
+{
+    if (!ledBlueState) return;
+    ledRGB.SetPixelColor(0, RgbColor(0, 0, 0));
+    ledRGB.Show();
+    ledBlueState = 0;
+}
+
+IRAM_ATTR void led_blue_on(void)
+{
+    if (ledBlueState) return;
+    ledRGB.SetPixelColor(0, RgbColor(0, 0, 255));
+    ledRGB.Show();
+    ledBlueState = 1;
+}
+
+IRAM_ATTR void led_blue_toggle(void)
+{
+    if (ledBlueState) { led_blue_off(); } else { led_blue_on(); }
+}
+
 //-- Display I2C
 #define OLED_SDA                IO_P22
 #define OLED_SCL                IO_P32
 #define OLED_I2C_BUFFER_SIZE    1024
-#define OLED_CLOCK_FREQ         400000L
+#define OLED_CLOCK_FREQ         1000000L  // fix - rather too much, but helps with LQ, ESP32 max speed
 
 //-- 5 Way Switch
 
@@ -240,26 +283,6 @@ void fan_set_power(int8_t power_dbm)
 }
 
 
-//-- POWER
-#define POWER_GAIN_DBM            28 // gain of a PA stage if present
-#define POWER_SX1280_MAX_DBM      SX1280_POWER_3_DBM  // maximum allowed sx power
-#define POWER_USE_DEFAULT_RFPOWER_CALC
-
-#define RFPOWER_DEFAULT           1 // index into rfpower_list array
-
-const rfpower_t rfpower_list[] = {
-    { .dbm = POWER_MIN, .mW = INT8_MIN },
-    { .dbm = POWER_10_DBM, .mW = 10 },
-    { .dbm = POWER_17_DBM, .mW = 50 },
-    { .dbm = POWER_20_DBM, .mW = 100 },
-};
-
-// #ifdef MLRS_FEATURE_OLED
-//   #undef DEVICE_HAS_COM_ON_USB
-//   #define DEVICE_HAS_NO_COM
-//   #define DEVICE_HAS_I2C_DISPLAY_ROT180
-// #endif
-
 //-- Serial or Com Switch
 // use com if FIVEWAY is DOWN during power up, else use serial
 // FIVEWAY-DONW becomes bind button later on
@@ -285,22 +308,17 @@ bool ser_or_com_serial(void)
 #endif
 
 
-// //-- POWER
+//-- POWER
+#define POWER_GAIN_DBM            28 // gain of a PA stage if present
+#define POWER_SX1280_MAX_DBM      SX1280_POWER_3_DBM  // maximum allowed sx power
+#define POWER_USE_DEFAULT_RFPOWER_CALC
 
-// #define POWER_GAIN_DBM            24 // 35 // gain of a PA stage if present // datasheet of SKY66312-11 says 35dB !
-// #define POWER_SX1280_MAX_DBM      SX1280_POWER_6_DBM //SX1280_POWER_m3_DBM // maximum allowed sx power
-// #define POWER_USE_DEFAULT_RFPOWER_CALC
+#define RFPOWER_DEFAULT           1 // index into rfpower_list array
 
-// #define RFPOWER_DEFAULT           1 // index into rfpower_list array
-
-// const rfpower_t rfpower_list[] = {
-//     { .dbm = POWER_MIN, .mW = INT8_MIN },
-//     { .dbm = POWER_20_DBM, .mW = 100 },
-//     { .dbm = POWER_24_DBM, .mW = 250 },
-//     { .dbm = POWER_27_DBM, .mW = 500 },
-//     { .dbm = POWER_30_DBM, .mW = 1000 },
-// };
-
-
-
-
+const rfpower_t rfpower_list[] = {
+    { .dbm = POWER_10_DBM, .mW = 10 },
+    { .dbm = POWER_20_DBM, .mW = 100 },
+    { .dbm = POWER_24_DBM, .mW = 250 },
+    { .dbm = POWER_27_DBM, .mW = 500 },
+    { .dbm = POWER_30_DBM, .mW = 1000 },
+};
