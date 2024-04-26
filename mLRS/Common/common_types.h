@@ -12,6 +12,7 @@
 
 
 #include <inttypes.h>
+#include <Arduino.h>
 
 
 #define ARRAY_LEN(x)  sizeof(x)/sizeof(x[0])
@@ -70,7 +71,15 @@ class tSerialBase
     virtual void flush(void) {}
     virtual uint16_t bytes_available(void) { return 0; }
 
+#ifdef ESP32
+    void putbuf(uint8_t* buf, uint16_t len)
+    {
+        Serial.write(buf, len);
+    }
+#else
     void putbuf(void* buf, uint16_t len) { for (uint16_t i = 0; i < len; i++) putc(((char*)buf)[i]); }
+#endif
+
     void puts(const char* s) { while (*s) { putc(*s); s++; }; }
 };
 
