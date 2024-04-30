@@ -279,9 +279,9 @@ The default selection of frequency bands can be overruled by feature defines.
   #define DEVICE_HAS_SX126x
   #define FREQUENCY_BAND_868_MHZ
   #define FREQUENCY_BAND_915_MHZ_FCC
-  //#define FREQUENCY_BAND_866_MHZ_IN
-  //#define FREQUENCY_BAND_433_MHZ
-  //#define FREQUENCY_BAND_70_CM_HAM
+  #define FREQUENCY_BAND_866_MHZ_IN
+  #define FREQUENCY_BAND_433_MHZ
+  #define FREQUENCY_BAND_70_CM_HAM
 #endif
 
 #ifdef TX_DIY_E77_E22_WLE5CC
